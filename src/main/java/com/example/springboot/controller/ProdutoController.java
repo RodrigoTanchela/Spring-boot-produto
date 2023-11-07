@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.springboot.model.vo.v1.ProdutoVO;
 import com.example.springboot.service.ProdutoServices;
+import com.example.springboot.utils.MediaType;
+
 
 @RestController
 @RequestMapping("/api/produto/v1")
@@ -22,22 +24,25 @@ public class ProdutoController {
 	@Autowired
 	private ProdutoServices service;
 	
-	@GetMapping("/{id}")
+	@GetMapping(value = "/{id}", 
+			produces = {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_YAML})
 	public ProdutoVO findById(@PathVariable(value = "id") Long id) {
 		return service.findById(id);
 	}
 	
-	@GetMapping
+	@GetMapping(produces = {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_YAML})
 	public List<ProdutoVO> findAll() {
 		return service.findAll();
 	}
 	
-	@PostMapping
+	@PostMapping(consumes = {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_YAML},
+			produces = {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_YAML})
 	public ProdutoVO create(@RequestBody ProdutoVO produto) {
 		return service.create(produto);
 	}
 	
-	@PutMapping
+	@PutMapping(consumes = {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_YAML},
+			produces = {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_YAML})
 	public ProdutoVO update(@RequestBody ProdutoVO produto) {
 		return service.update(produto);
 	}

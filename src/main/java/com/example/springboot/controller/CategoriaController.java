@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.springboot.model.vo.v1.CategoriaVO;
 import com.example.springboot.service.CategoriaServices;
+import com.example.springboot.utils.MediaType;
 
 @RestController
 @RequestMapping("/api/categoria/v1")
@@ -22,22 +23,24 @@ public class CategoriaController {
 	@Autowired
 	private CategoriaServices service;
 	
-	@GetMapping("/{id}")
+	@GetMapping(value = "/{id}", produces = {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_YAML})
 	public CategoriaVO findById(@PathVariable(value = "id") Long id) {
 		return service.findById(id);
 	}
 	
-	@GetMapping
+	@GetMapping(produces = {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_YAML})
 	public List<CategoriaVO> findAll() {
 		return service.findAll();
 	}
 	
-	@PostMapping
+	@PostMapping(consumes = {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_YAML},
+			produces = {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_YAML})
 	public CategoriaVO create(@RequestBody CategoriaVO categoria) {
 		return service.create(categoria);
 	}
 	
-	@PutMapping
+	@PutMapping(consumes = {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_YAML},
+			produces = {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_YAML})
 	public CategoriaVO update(@RequestBody CategoriaVO categoria) {
 		return service.update(categoria);
 	}

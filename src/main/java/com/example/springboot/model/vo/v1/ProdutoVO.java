@@ -4,13 +4,14 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Objects;
 
+import org.springframework.hateoas.RepresentationModel;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.github.dozermapper.core.Mapping;
 
-
 @JsonPropertyOrder({"id", "nome", "value", "categoria"})
-public class ProdutoVO implements Serializable {
+public class ProdutoVO extends RepresentationModel<ProdutoVO> implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	

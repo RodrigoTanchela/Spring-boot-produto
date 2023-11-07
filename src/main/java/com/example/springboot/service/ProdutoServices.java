@@ -4,8 +4,13 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Service;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
+import com.example.springboot.controller.ProdutoController;
 import com.example.springboot.exceptions.ResourceNotFoundException;
 import com.example.springboot.mapper.DozerMapper;
 import com.example.springboot.model.Produto;
@@ -22,6 +27,7 @@ private Logger logger = Logger.getLogger(ProdutoServices.class.getName());
 	public List<ProdutoVO> findAll() {
 		logger.info("Finding all people");
 		var produtos =  DozerMapper.parseListObject(repository.findAll(), ProdutoVO.class);
+		produtos.stream().forEach(p-> p.add(linkTo(methodOn(ProdutoController.class).findById(p.getKey())).withSelfRel()));
 		return produtos;
 	}
 
@@ -30,6 +36,7 @@ private Logger logger = Logger.getLogger(ProdutoServices.class.getName());
 		
 		var entity = repository.findById(id).orElseThrow(()-> new ResourceNotFoundException("No records Found for this Id"));
 		var vo = DozerMapper.parseObject(entity, ProdutoVO.class);
+		vo.add(linkTo(methodOn(ProdutoController.class).findAll()).withSelfRel());
 		return vo;
 	}
 	
@@ -37,6 +44,7 @@ private Logger logger = Logger.getLogger(ProdutoServices.class.getName());
 		logger.info("Creating one produto!");
 		var entity = DozerMapper.parseObject(produto, Produto.class);
 		var vo = DozerMapper.parseObject(repository.save(entity), ProdutoVO.class);
+		vo.add(linkTo(methodOn(ProdutoController.class).findById(produto.getKey())).withSelfRel());
 		return vo;
 	}
 	
@@ -45,6 +53,7 @@ private Logger logger = Logger.getLogger(ProdutoServices.class.getName());
 		var entity = repository.findById(produto.getKey()).orElseThrow(() -> new ResourceNotFoundException("Not found"));
 		entity.setNome(produto.getNome());
 		var vo = DozerMapper.parseObject(repository.save(entity), ProdutoVO.class);
+		vo.add(linkTo(methodOn(ProdutoController.class).findById(produto.getKey())).withSelfRel());
 		return vo;
 	}
 	
