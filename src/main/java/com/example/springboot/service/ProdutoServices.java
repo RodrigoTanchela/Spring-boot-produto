@@ -1,10 +1,10 @@
 package com.example.springboot.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Service;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -16,6 +16,8 @@ import com.example.springboot.mapper.DozerMapper;
 import com.example.springboot.model.Produto;
 import com.example.springboot.model.vo.v1.ProdutoVO;
 import com.example.springboot.repository.ProdutoRepository;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class ProdutoServices {
@@ -54,6 +56,16 @@ private Logger logger = Logger.getLogger(ProdutoServices.class.getName());
 		entity.setNome(produto.getNome());
 		var vo = DozerMapper.parseObject(repository.save(entity), ProdutoVO.class);
 		vo.add(linkTo(methodOn(ProdutoController.class).findById(produto.getKey())).withSelfRel());
+		return vo;
+	}
+	
+	@Transactional
+	public ProdutoVO updateValue(Long id, BigDecimal value) {	
+		logger.info("update value!");
+		repository.updateValue(id, value);	
+		var entity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No records found for this ID!"));
+		var vo = DozerMapper.parseObject(entity, ProdutoVO.class);
+		vo.add(linkTo(methodOn(ProdutoController.class).findById(id)).withSelfRel());
 		return vo;
 	}
 	

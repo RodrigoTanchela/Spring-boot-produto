@@ -10,6 +10,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,7 +18,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.Table;
 
+@Entity
+@Table(name = "tbusuarios")
 public class Usuario implements UserDetails, Serializable {
 	
 	private static final long serialVersionUID = 1L;
@@ -26,8 +30,8 @@ public class Usuario implements UserDetails, Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@Column(name = "user_name", unique = true, nullable = true, length = 255)
-	private String userName;
+	@Column(name = "username", unique = true, nullable = true, length = 255)
+	private String username;
 	
 	@Column (name = "full_name")
 	private String fullName;
@@ -50,161 +54,129 @@ public class Usuario implements UserDetails, Serializable {
 	public Usuario() {
 		super();
 	}
-	
+
 	@ManyToMany(fetch = FetchType.EAGER)
-	@JoinTable(name = "usuario_permissoes", joinColumns= {@JoinColumn (name = "id_usuario")},
-			inverseJoinColumns = {@JoinColumn (name = "id_permissao")})
+	@JoinTable(name = "tbusuario_permissao", joinColumns= {@JoinColumn (name = "id_user")},
+			inverseJoinColumns = {@JoinColumn (name = "id_permission")})
 	private List<Permissao> permissions;
 	
-	public List<String> getRoles(){
+	public List<String> getRoles() {
 		List<String> roles = new ArrayList<>();
-		for(Permissao permissao : permissions) {
-			roles.add(permissao.getDescription());
+		for(Permissao permission : permissions) {
+			roles.add(permission.getDescription());
 		}
 		return roles;
 	}
-	
-	
-	public Long getId() {
-		return id;
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return this.permissions;
 	}
 
 
+	@Override
+	public String getPassword() {
+		return this.password;
+	}
+
+	@Override
+	public String getUsername() {
+		return this.username;
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		return this.accountNonExpired;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		return this.accountNonLocked;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return this.credentialsNonExpired;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return this.enabled;
+	}
+
+	public Long getId() {
+		return id;
+	}
 
 	public void setId(Long id) {
 		this.id = id;
 	}
 
-
-
 	public String getUserName() {
-		return userName;
+		return username;
 	}
-
-
 
 	public void setUserName(String userName) {
-		this.userName = userName;
+		this.username = userName;
 	}
-
-
 
 	public String getFullName() {
 		return fullName;
 	}
 
-
-
 	public void setFullName(String fullName) {
 		this.fullName = fullName;
 	}
-
-
 
 	public Boolean getAccountNonExpired() {
 		return accountNonExpired;
 	}
 
-
-
 	public void setAccountNonExpired(Boolean accountNonExpired) {
 		this.accountNonExpired = accountNonExpired;
 	}
-
-
 
 	public Boolean getAccountNonLocked() {
 		return accountNonLocked;
 	}
 
-
-
 	public void setAccountNonLocked(Boolean accountNonLocked) {
 		this.accountNonLocked = accountNonLocked;
 	}
-
-
 
 	public Boolean getCredentialsNonExpired() {
 		return credentialsNonExpired;
 	}
 
-
-
 	public void setCredentialsNonExpired(Boolean credentialsNonExpired) {
 		this.credentialsNonExpired = credentialsNonExpired;
 	}
-
-
 
 	public Boolean getEnabled() {
 		return enabled;
 	}
 
-
-
 	public void setEnabled(Boolean enabled) {
 		this.enabled = enabled;
 	}
 
-
-
-	public static long getSerialversionuid() {
-		return serialVersionUID;
+	public List<Permissao> getPermissions() {
+		return permissions;
 	}
 
-
+	public void setPermissions(List<Permissao> permissions) {
+		this.permissions = permissions;
+	}
 
 	public void setPassword(String password) {
 		this.password = password;
 	}
 
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getPassword() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getUsername() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean isAccountNonExpired() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean isAccountNonLocked() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean isCredentialsNonExpired() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean isEnabled() {
-		// TODO Auto-generated method stub
-		return false;
-	}
 
 	@Override
 	public int hashCode() {
 		return Objects.hash(accountNonExpired, accountNonLocked, credentialsNonExpired, enabled, fullName, id, password,
-				userName);
+				permissions, username);
 	}
 
 	@Override
@@ -221,9 +193,9 @@ public class Usuario implements UserDetails, Serializable {
 				&& Objects.equals(credentialsNonExpired, other.credentialsNonExpired)
 				&& Objects.equals(enabled, other.enabled) && Objects.equals(fullName, other.fullName)
 				&& Objects.equals(id, other.id) && Objects.equals(password, other.password)
-				&& Objects.equals(userName, other.userName);
+				&& Objects.equals(permissions, other.permissions) && Objects.equals(username, other.username);
 	}
-	
+
 	
 
 }

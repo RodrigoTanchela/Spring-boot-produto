@@ -1,11 +1,13 @@
 package com.example.springboot.controller;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -102,6 +104,25 @@ public class ProdutoController {
 	public ProdutoVO update(@RequestBody ProdutoVO produto) {
 		return service.update(produto);
 	}
+	
+	@PatchMapping(value = "/{id}",
+			produces = { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_YAML})
+		@Operation(summary = "Update value produto", description = "Update value produto",
+			tags = {"Produto"},
+			responses = {
+				@ApiResponse(description = "Success", responseCode = "200",
+					content = @Content(schema = @Schema(implementation = ProdutoVO.class))
+				),
+				@ApiResponse(description = "No Content", responseCode = "204", content = @Content),
+				@ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
+				@ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
+				@ApiResponse(description = "Not Found", responseCode = "404", content = @Content),
+				@ApiResponse(description = "Internal Error", responseCode = "500", content = @Content),
+			}
+		)
+		public ProdutoVO updateValue(@PathVariable(value = "id") Long id, @RequestBody BigDecimal value) {
+			return service.updateValue(id, value);
+		}
 	
 	@DeleteMapping("/{id}")
 	@Operation(summary = "Deleta um produto", description = "Deleta um produto pelo id", 

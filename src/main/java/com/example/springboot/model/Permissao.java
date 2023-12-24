@@ -6,10 +6,14 @@ import java.util.Objects;
 import org.springframework.security.core.GrantedAuthority;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
+@Entity
+@Table(name = "tbpermissao")
 public class Permissao implements GrantedAuthority,  Serializable {
 	
 	private static final long serialVersionUID = 1L;
